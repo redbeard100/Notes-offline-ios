@@ -16,10 +16,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     @IBOutlet weak var filesTable: UITableView!
     override func viewDidLoad() {
         super.viewDidLoad()
-        filesTable.reloadData()
         DataOperations.shared.fetchData()
         AddNewButton.layer.masksToBounds = true
         AddNewButton.layer.cornerRadius = AddNewButton.frame.width/2
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        DataOperations.shared.fetchData()
+        filesTable.reloadData()
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

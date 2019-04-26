@@ -112,6 +112,7 @@
                     </view>
                     <connections>
                         <outlet property="contentTextView" destination="bw0-MC-7re" id="WlS-Y0-AQA"/>
+                        <outlet property="contentTextViewBottomConst" destination="9kD-c6-LEM" id="nvp-xu-cVt"/>
                         <outlet property="nameTextField" destination="WIc-fz-SjX" id="jqa-gK-dmT"/>
                     </connections>
                 </viewController>
