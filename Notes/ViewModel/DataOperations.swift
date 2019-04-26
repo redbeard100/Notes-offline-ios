@@ -9,6 +9,8 @@
 import UIKit
 import CoreData
 class DataOperations: NSObject {
+    var isUpdate = -1
+    var issaveSuccess = true
     static let shared = DataOperations()
     
     /* Description: Saving Data to Core Data
@@ -16,19 +18,30 @@ class DataOperations: NSObject {
      - Returns: bool
      */
     func saveData(contentData: String, nameData: String) -> Bool {
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        let context = appDelegate.persistentContainer.viewContext
-        let entity = NSEntityDescription.entity(forEntityName: "Notes", in: context)!
-        let newfile = NSManagedObject(entity: entity, insertInto: context)
-        newfile.setValue(nameData, forKey: "name")
-        newfile.setValue(contentData, forKey: "content")
-        do {
-            try context.save()
-            return true
-        } catch let error as NSError{
-            print(error)
-            return false
+        if DataModel.shared.name.count > 0 {
+            for index in 0...DataModel.shared.name.count - 1 {
+                if nameData == DataModel.shared.name[index] {
+                    isUpdate = index
+                }
+            }
         }
+            if isUpdate != -1 {
+                issaveSuccess = updateData(name: nameData, content: contentData, index: isUpdate)
+            }else {
+            let appDelegate = UIApplication.shared.delegate as! AppDelegate
+            let context = appDelegate.persistentContainer.viewContext
+            let entity = NSEntityDescription.entity(forEntityName: "Notes", in: context)!
+            let newfile = NSManagedObject(entity: entity, insertInto: context)
+                newfile.setValue(nameData, forKey: "name")
+                newfile.setValue(contentData, forKey: "content")
+                do {
+                    try context.save()
+                } catch let error as NSError{
+                    print(error)
+                    issaveSuccess = false
+                }
+        }
+        return issaveSuccess
     }
 
 

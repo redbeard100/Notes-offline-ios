@@ -16,6 +16,7 @@ class AddNewFileViewController: UIViewController,UITextFieldDelegate,UITextViewD
     var flagUpdate = 0
     var indexNo:Int?
     var isKeyboardVisible = 0
+    var isSaved = 0
     @IBOutlet weak var contentTextViewBottomConst: NSLayoutConstraint!
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,6 +34,19 @@ class AddNewFileViewController: UIViewController,UITextFieldDelegate,UITextViewD
             nameTextField.text = DataModel.shared.name[index]
             contentTextView.text = DataModel.shared.content[index]
         }
+        else if let name = UserDefaults.standard.object(forKey: "name") as? String, let content = UserDefaults.standard.object(forKey: "content") as? String{
+            nameTextField.text = name
+            contentTextView.text = content
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        if indexNo != nil {
+            nameTextField.text = ""
+            contentTextView.text = ""
+        }
+        UserDefaults.standard.set(nameTextField.text, forKey: "name")
+        UserDefaults.standard.set(contentTextView.text, forKey: "content")
     }
     
     //    MARK:- TextField Delegates
@@ -87,7 +101,6 @@ class AddNewFileViewController: UIViewController,UITextFieldDelegate,UITextViewD
                     alertPopUp(title: "Success", message: "File Updated", isSuccess: true)
                 }else {
                     alertPopUp(title: "Failed", message: "Failed to update data. Try Again", isSuccess: false)
-                    
                 }
             }
             else {
@@ -106,6 +119,10 @@ class AddNewFileViewController: UIViewController,UITextFieldDelegate,UITextViewD
         if isSuccess {
             contentTextView.resignFirstResponder()
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: { (action: UIAlertAction!) in
+//                UserDefaults.standard.set("", forKey: "name")
+//                UserDefaults.standard.set("", forKey: "content")
+                self.contentTextView.text = ""
+                self.nameTextField.text = ""
                 self.navigationController?.popToRootViewController(animated: true)
             }))
         }else {
