@@ -34,9 +34,12 @@ class AddNewFileViewController: UIViewController,UITextFieldDelegate,UITextViewD
             nameTextField.text = DataModel.shared.name[index]
             contentTextView.text = DataModel.shared.content[index]
         }
-        else if let name = UserDefaults.standard.object(forKey: "name") as? String, let content = UserDefaults.standard.object(forKey: "content") as? String{
+        else if let name = UserDefaults.standard.object(forKey: "name") as? String, name != "", let content = UserDefaults.standard.object(forKey: "content") as? String, content != "" {
             nameTextField.text = name
             contentTextView.text = content
+        }else {
+            contentTextView.text = "Enter the content here"
+            contentTextView.textColor = UIColor.lightGray
         }
     }
     
@@ -68,6 +71,10 @@ class AddNewFileViewController: UIViewController,UITextFieldDelegate,UITextViewD
     
     //    MARK:- TextView Delegates
     func textViewDidBeginEditing(_ textView: UITextView) {
+        if contentTextView.text == "Enter the content here" {
+            contentTextView.text = ""
+            contentTextView.textColor = UIColor.black
+        }
         if isKeyboardVisible == 0 {
             isKeyboardVisible = 1
             saveButton.isEnabled = true
