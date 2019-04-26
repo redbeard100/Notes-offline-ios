@@ -25,26 +25,26 @@ class DataOperations: NSObject {
                 }
             }
         }
-            if isUpdate != -1 {
-                issaveSuccess = updateData(name: nameData, content: contentData, index: isUpdate)
-            }else {
+        if isUpdate != -1 {
+            issaveSuccess = updateData(name: nameData, content: contentData, index: isUpdate)
+        }else {
             let appDelegate = UIApplication.shared.delegate as! AppDelegate
             let context = appDelegate.persistentContainer.viewContext
             let entity = NSEntityDescription.entity(forEntityName: "Notes", in: context)!
             let newfile = NSManagedObject(entity: entity, insertInto: context)
-                newfile.setValue(nameData, forKey: "name")
-                newfile.setValue(contentData, forKey: "content")
-                do {
-                    try context.save()
-                } catch let error as NSError{
-                    print(error)
-                    issaveSuccess = false
-                }
+            newfile.setValue(nameData, forKey: "name")
+            newfile.setValue(contentData, forKey: "content")
+            do {
+                try context.save()
+            } catch let error as NSError{
+                print(error)
+                issaveSuccess = false
+            }
         }
         return issaveSuccess
     }
-
-
+    
+    
     /* Description: Fetching Data from Core Data
      - Parameter keys: No Parameter
      - Returns: No Parameter
@@ -78,9 +78,9 @@ class DataOperations: NSObject {
         let context = appDelegate.persistentContainer.viewContext
         do {
             let notes = try context.fetch(request)
-                let note = notes[index] as! NSManagedObject
-                note.setValue(name, forKey: "name")
-                note.setValue(content, forKey: "content")
+            let note = notes[index] as! NSManagedObject
+            note.setValue(name, forKey: "name")
+            note.setValue(content, forKey: "content")
             do {
                 try context.save()
                 return true
@@ -105,8 +105,8 @@ class DataOperations: NSObject {
         let context = appDelegate.persistentContainer.viewContext
         do {
             let notes = try context.fetch(request)
-                let note = notes[index] as! NSManagedObject
-                context.delete(note)
+            let note = notes[index] as! NSManagedObject
+            context.delete(note)
             do {
                 try context.save()
                 fetchData()

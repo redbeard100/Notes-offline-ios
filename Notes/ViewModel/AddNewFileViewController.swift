@@ -83,8 +83,9 @@ class AddNewFileViewController: UIViewController,UITextFieldDelegate,UITextViewD
      - Returns: No Parameter
      */
     @objc func saveButtonAction(_ sender: UIBarButtonItem) {
+        
         if flagUpdate == 0 {
-            if (nameTextField.text != "") && (contentTextView.text != "" ) {
+            if !checkforEmptyString(string:nameTextField.text!) && !checkforEmptyString(string:contentTextView.text!) {
                 if  DataOperations.shared.saveData(contentData: contentTextView.text!, nameData: nameTextField.text!) {
                     alertPopUp(title: "Success", message: "File Saved", isSuccess: true)
                 }else {
@@ -96,7 +97,7 @@ class AddNewFileViewController: UIViewController,UITextFieldDelegate,UITextViewD
             }
         }
         else if (flagUpdate == 1) {
-            if (nameTextField.text != "") && (contentTextView.text != "" ) {
+            if !checkforEmptyString(string:nameTextField.text!) && !checkforEmptyString(string:contentTextView.text!) {
                 if  DataOperations.shared.updateData(name: nameTextField.text!, content: contentTextView.text!, index: indexNo!) {
                     alertPopUp(title: "Success", message: "File Updated", isSuccess: true)
                 }else {
@@ -119,8 +120,6 @@ class AddNewFileViewController: UIViewController,UITextFieldDelegate,UITextViewD
         if isSuccess {
             contentTextView.resignFirstResponder()
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: { (action: UIAlertAction!) in
-//                UserDefaults.standard.set("", forKey: "name")
-//                UserDefaults.standard.set("", forKey: "content")
                 self.contentTextView.text = ""
                 self.nameTextField.text = ""
                 self.navigationController?.popToRootViewController(animated: true)
@@ -143,5 +142,14 @@ class AddNewFileViewController: UIViewController,UITextFieldDelegate,UITextViewD
                 self.view.layoutIfNeeded()
             })
         }
+    }
+    
+    /* Description: Checking for white space in the string
+     - Parameter keys: string
+     - Returns: No Parameter
+     */
+    func checkforEmptyString(string: String) -> Bool{
+        let trimmed = string.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        return trimmed.isEmpty
     }
 }
