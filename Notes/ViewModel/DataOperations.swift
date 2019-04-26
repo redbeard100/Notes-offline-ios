@@ -12,8 +12,8 @@ class DataOperations: NSObject {
     static let shared = DataOperations()
     
     /* Description: Saving Data to Core Data
-     - Parameter keys: No Parameter
-     - Returns: No Parameter
+     - Parameter keys: contentData, nameData
+     - Returns: bool
      */
     func saveData(contentData: String, nameData: String) -> Bool {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -56,8 +56,8 @@ class DataOperations: NSObject {
     }
     
     /* Description: Updating Data to Core Data
-     - Parameter keys: No Parameter
-     - Returns: No Parameter
+     - Parameter keys: name, content, index
+     - Returns: bool
      */
     func updateData(name: String, content: String, index: Int) -> Bool {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -65,20 +65,44 @@ class DataOperations: NSObject {
         let context = appDelegate.persistentContainer.viewContext
         do {
             let notes = try context.fetch(request)
-            if notes.count > 0 {
                 let note = notes[index] as! NSManagedObject
                 note.setValue(name, forKey: "name")
                 note.setValue(content, forKey: "content")
+            do {
                 try context.save()
                 return true
             }
-            else {
+            catch {
                 print("Note not Found")
                 return false
             }
         } catch  {
             print("Failed to Update")
             return false
+        }
+    }
+    
+    /* Description: Deleting Data from Core Data
+     - Parameter keys: index
+     - Returns: No Parameter
+     */
+    func deleteData(index: Int) {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Notes")
+        let context = appDelegate.persistentContainer.viewContext
+        do {
+            let notes = try context.fetch(request)
+                let note = notes[index] as! NSManagedObject
+                context.delete(note)
+            do {
+                try context.save()
+                fetchData()
+            }
+            catch {
+                print("Note not Found")
+            }
+        } catch  {
+            print("Failed to Update")
         }
     }
 }

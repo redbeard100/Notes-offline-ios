@@ -9,11 +9,10 @@
 import UIKit
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-    
     @IBOutlet weak var AddNewButton: UIButton!
     let addNewFileViewController = AddNewFileViewController()
-    
     @IBOutlet weak var filesTable: UITableView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         DataOperations.shared.fetchData()
@@ -26,8 +25,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         filesTable.reloadData()
     }
     
+    //    MARK:- Table View Delegates
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-            return DataModel.shared.name.count
+        return DataModel.shared.name.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -40,8 +40,15 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let AddFileVC : AddNewFileViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "AddFileVC") as! AddNewFileViewController
         AddFileVC.indexNo = indexPath.row
         AddFileVC.flagUpdate = 1
-        self.present(AddFileVC, animated: true, completion: nil)
-
+        navigationController?.pushViewController(AddFileVC, animated: true)
+    }
+    
+    //    MARK:- Delete Table rows
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == UITableViewCell.EditingStyle.delete {
+            DataOperations.shared.deleteData(index: indexPath.row)
+            tableView.reloadData()
+        }
     }
 }
 
