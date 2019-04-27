@@ -44,6 +44,7 @@ class AddNewFileViewController: UIViewController,UITextFieldDelegate,UITextViewD
     }
     
     override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(true)
         if indexNo != nil {
             nameTextField.text = ""
             contentTextView.text = ""
