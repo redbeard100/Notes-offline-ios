@@ -91,22 +91,28 @@ class AddNewFileViewController: UIViewController,UITextFieldDelegate,UITextViewD
      - Returns: No Parameter
      */
     @objc func saveButtonAction(_ sender: UIBarButtonItem) {
-        
+        var name = nameTextField.text!
         if flagUpdate == 0 {
-            if !checkforEmptyString(string:nameTextField.text!) && !checkforEmptyString(string:contentTextView.text!) {
-                if  DataOperations.shared.saveData(contentData: contentTextView.text!, nameData: nameTextField.text!) {
+            if !checkforEmptyString(string:name) && !checkforEmptyString(string:contentTextView.text!) {
+                if (name.first == " ") {
+                    name.removeFirst()
+                }
+                if  DataOperations.shared.saveData(contentData: contentTextView.text!, nameData: name) {
                     alertPopUp(title: "Success", message: "File Saved", isSuccess: true)
                 }else {
                     alertPopUp(title: "Failed", message: "Failed to save data. Try Again", isSuccess: false)
                 }
             }
             else {
-                alertPopUp(title: "Failed", message: "Please Enter Name and Content of the File", isSuccess: false)
+                alertPopUp(title: "Failed", message: "Please Enter a valid Name and Content of the File", isSuccess: false)
             }
         }
         else if (flagUpdate == 1) {
             if !checkforEmptyString(string:nameTextField.text!) && !checkforEmptyString(string:contentTextView.text!) {
-                if  DataOperations.shared.updateData(name: nameTextField.text!, content: contentTextView.text!, index: indexNo!) {
+                if (name.first == " ") {
+                    name.removeFirst()
+                }
+                if  DataOperations.shared.updateData(name: name, content: contentTextView.text!, index: indexNo!) {
                     alertPopUp(title: "Success", message: "File Updated", isSuccess: true)
                 }else {
                     alertPopUp(title: "Failed", message: "Failed to update data. Try Again", isSuccess: false)
