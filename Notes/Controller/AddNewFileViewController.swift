@@ -17,30 +17,18 @@ class AddNewFileViewController: UIViewController,UITextFieldDelegate,UITextViewD
     var indexNo:Int?
     var isKeyboardVisible = 0
     var isSaved = 0
+    var keyboardHeight: CGFloat = 0
+    
     @IBOutlet weak var contentTextViewBottomConst: NSLayoutConstraint!
     override func viewDidLoad() {
         super.viewDidLoad()
-        contentTextView.delegate = self
-        nameTextField.delegate = self
-        saveButton = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(saveButtonAction(_:)))
-        self.navigationItem.rightBarButtonItem  = saveButton
-        saveButton.isEnabled = false
-        nameTextField.layer.borderWidth = 3
-        nameTextField.layer.borderColor = #colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1)
-        contentTextView.layer.borderWidth = 3
-        contentTextView.layer.borderColor = #colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
-        if let index = indexNo {
-            nameTextField.text = DataModel.shared.name[index]
-            contentTextView.text = DataModel.shared.content[index]
-        }
-        else if let name = UserDefaults.standard.object(forKey: "name") as? String, name != "", let content = UserDefaults.standard.object(forKey: "content") as? String, content != "" {
-            nameTextField.text = name
-            contentTextView.text = content
-        }else {
-            contentTextView.text = "Enter the content here"
-            contentTextView.textColor = UIColor.lightGray
-        }
+        self.automaticallyAdjustsScrollViewInsets = false
+        view.backgroundColor = currentTheme.superViewColor
+        customizeTextView()
+        customizeTextField()
+        customizeSaveButton()
+        keyboardHandelar()
+        settingTexts()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -74,16 +62,13 @@ class AddNewFileViewController: UIViewController,UITextFieldDelegate,UITextViewD
     func textViewDidBeginEditing(_ textView: UITextView) {
         if contentTextView.text == "Enter the content here" {
             contentTextView.text = ""
-            contentTextView.textColor = UIColor.black
         }
-        if isKeyboardVisible == 0 {
-            isKeyboardVisible = 1
-            saveButton.isEnabled = true
-            UIView.animate(withDuration: 0.5, animations: {
-                self.contentTextViewBottomConst.constant =  self.view.frame.height/2.58 + 20
-                self.view.layoutIfNeeded()
-            })
-        }
+        isKeyboardVisible = 1
+        saveButton.isEnabled = true
+        UIView.animate(withDuration: 0.5, animations: {
+            self.contentTextViewBottomConst.constant = self.keyboardHeight + 10
+            self.view.layoutIfNeeded()
+        })
     }
     
     /* Description: Save Button Action
@@ -133,6 +118,7 @@ class AddNewFileViewController: UIViewController,UITextFieldDelegate,UITextViewD
         let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
         if isSuccess {
             contentTextView.resignFirstResponder()
+            nameTextField.resignFirstResponder()
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: { (action: UIAlertAction!) in
                 self.contentTextView.text = ""
                 self.nameTextField.text = ""
@@ -144,17 +130,29 @@ class AddNewFileViewController: UIViewController,UITextFieldDelegate,UITextViewD
         self.present(alert, animated: true, completion: nil)
     }
     
+    /* Description: Enable Keyboard Action and getting keyboardHeight
+     - Parameter keys: notification
+     - Returns: No Parameter
+     */
+    @objc func keyboardWillShow(notification: NSNotification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+            keyboardHeight = keyboardSize.height
+        }
+    }
+    
     /* Description: Dismiss Keyboard Action
      - Parameter keys: notification
      - Returns: No Parameter
      */
     @objc func keyboardWillHide(notification: NSNotification) {
         if isKeyboardVisible == 1 {
-            isKeyboardVisible = 0
-            UIView.animate(withDuration: 0.5, animations: {
-                self.contentTextViewBottomConst.constant = 20
-                self.view.layoutIfNeeded()
-            })
+            if isKeyboardVisible == 1 {
+                isKeyboardVisible = 0
+                UIView.animate(withDuration: 0.5, animations: {
+                    self.contentTextViewBottomConst.constant = 10
+                    self.view.layoutIfNeeded()
+                })
+            }
         }
     }
     
@@ -165,5 +163,42 @@ class AddNewFileViewController: UIViewController,UITextFieldDelegate,UITextViewD
     func checkforEmptyString(string: String) -> Bool{
         let trimmed = string.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         return trimmed.isEmpty
+    }
+    
+//    MARK:- Customizing UI Elements
+    func customizeTextView() {
+        contentTextView.applyTheme()
+        contentTextView.delegate = self
+    }
+    
+    func customizeTextField() {
+        nameTextField.delegate = self
+        nameTextField.layer.borderWidth = 3
+        contentTextView.layer.borderWidth = 3
+        nameTextField.applyTheme()
+    }
+    
+    func settingTexts() {
+        if let index = indexNo {
+            nameTextField.text = DataModel.shared.name[index]
+            contentTextView.text = DataModel.shared.content[index]
+        }
+        else if let name = UserDefaults.standard.object(forKey: "name") as? String, name != "", let content = UserDefaults.standard.object(forKey: "content") as? String, content != "" {
+            nameTextField.text = name
+            contentTextView.text = content
+        }else {
+            contentTextView.text = "Enter the content here"
+        }
+    }
+    
+    func customizeSaveButton() {
+        saveButton = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(saveButtonAction(_:)))
+        self.navigationItem.rightBarButtonItem  = saveButton
+        saveButton.isEnabled = false
+    }
+    
+    func keyboardHandelar() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 }
