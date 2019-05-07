@@ -111,6 +111,8 @@ extension ViewFilesVC: UICollectionViewDelegate, UICollectionViewDataSource {
         }
         cell.nameLbl.text = DataModel.shared.name[indexPath.row]
         cell.contentsLbl.text = DataModel.shared.content[indexPath.row]
+        cell.contentsLbl.lineBreakMode = .byWordWrapping
+        cell.contentsLbl.numberOfLines = 0
         return cell
     }
     
