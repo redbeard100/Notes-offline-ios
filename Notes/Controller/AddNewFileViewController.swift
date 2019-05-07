@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AddNewFileViewController: UIViewController,UITextFieldDelegate,UITextViewDelegate {
+class AddNewFileViewController: UIViewController {
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var contentTextView: UITextView!
     var saveButton: UIBarButtonItem!
@@ -41,35 +41,15 @@ class AddNewFileViewController: UIViewController,UITextFieldDelegate,UITextViewD
         UserDefaults.standard.set(contentTextView.text, forKey: "content")
     }
     
-    //    MARK:- TextField Delegates
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        saveButton.isEnabled = true
-        if isKeyboardVisible == 0 {
-            isKeyboardVisible = 1
-            UIView.animate(withDuration: 0.5, animations: {
-                self.contentTextViewBottomConst.constant =  self.view.frame.height/2.58 + 20
-                self.view.layoutIfNeeded()
-            })
-        }
-    }
-    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         nameTextField.resignFirstResponder()
+        UIView.animate(withDuration: 0.5, animations: {
+            self.contentTextViewBottomConst.constant = 10
+            self.view.layoutIfNeeded()
+        })
         return false
     }
     
-    //    MARK:- TextView Delegates
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        if contentTextView.text == "Enter the content here" {
-            contentTextView.text = ""
-        }
-        isKeyboardVisible = 1
-        saveButton.isEnabled = true
-        UIView.animate(withDuration: 0.5, animations: {
-            self.contentTextViewBottomConst.constant = self.keyboardHeight + 10
-            self.view.layoutIfNeeded()
-        })
-    }
     
     /* Description: Save Button Action
      - Parameter keys: sender
@@ -200,5 +180,34 @@ class AddNewFileViewController: UIViewController,UITextFieldDelegate,UITextViewD
     func keyboardHandelar() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+}
+
+extension AddNewFileViewController: UITextFieldDelegate {
+    //    MARK:- TextField Delegates
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        saveButton.isEnabled = true
+        if isKeyboardVisible == 0 {
+            isKeyboardVisible = 1
+            UIView.animate(withDuration: 0.5, animations: {
+                self.contentTextViewBottomConst.constant =  self.view.frame.height/2.58 + 20
+                self.view.layoutIfNeeded()
+            })
+        }
+    }
+}
+
+extension AddNewFileViewController: UITextViewDelegate {
+    //    MARK:- TextView Delegates
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if contentTextView.text == "Enter the content here" {
+            contentTextView.text = ""
+        }
+        isKeyboardVisible = 1
+        saveButton.isEnabled = true
+        UIView.animate(withDuration: 0.5, animations: {
+            self.contentTextViewBottomConst.constant = self.keyboardHeight + 10
+            self.view.layoutIfNeeded()
+        })
     }
 }

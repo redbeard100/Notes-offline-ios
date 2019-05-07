@@ -13,7 +13,7 @@
         <!--All Notes-->
         <scene sceneID="zhq-a4-ZWD">
             <objects>
-                <viewController storyboardIdentifier="ShowFilesVC" id="Zmd-xj-NeQ" customClass="ViewController" customModule="Notes" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ShowFilesVC" id="Zmd-xj-NeQ" customClass="ViewFilesVC" customModule="Notes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="LC2-By-w9d">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -50,36 +50,100 @@
                                     <segue destination="S1j-m3-Gna" kind="show" id="MFa-I8-oLF"/>
                                 </connections>
                             </button>
+                            <collectionView hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="haA-so-Cg3">
+                                <rect key="frame" x="16" y="88" width="382" height="774"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="9z8-ke-1lu">
+                                    <size key="itemSize" width="180" height="151"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="customCell" id="q5S-4f-MVT" customClass="allFilesCollectionViewCell" customModule="Notes" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="180" height="151"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
+                                            <rect key="frame" x="0.0" y="0.0" width="180" height="151"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3zW-s2-gNQ">
+                                                    <rect key="frame" x="0.0" y="0.0" width="180" height="48"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="30"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="10" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MYr-S8-Wrd">
+                                                    <rect key="frame" x="0.0" y="48" width="180" height="103"/>
+                                                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </view>
+                                        <constraints>
+                                            <constraint firstAttribute="trailing" secondItem="3zW-s2-gNQ" secondAttribute="trailing" id="3wy-Qc-68y"/>
+                                            <constraint firstItem="3zW-s2-gNQ" firstAttribute="top" secondItem="q5S-4f-MVT" secondAttribute="top" id="5pK-2N-5XF"/>
+                                            <constraint firstItem="MYr-S8-Wrd" firstAttribute="top" secondItem="3zW-s2-gNQ" secondAttribute="bottom" id="L0e-vk-v7s"/>
+                                            <constraint firstItem="3zW-s2-gNQ" firstAttribute="leading" secondItem="q5S-4f-MVT" secondAttribute="leading" id="dHM-b5-XBO"/>
+                                            <constraint firstItem="MYr-S8-Wrd" firstAttribute="leading" secondItem="q5S-4f-MVT" secondAttribute="leading" id="owL-hq-HqZ"/>
+                                            <constraint firstAttribute="bottom" secondItem="MYr-S8-Wrd" secondAttribute="bottom" id="qf3-uD-4G7"/>
+                                            <constraint firstAttribute="trailing" secondItem="MYr-S8-Wrd" secondAttribute="trailing" id="uiF-jX-uhy"/>
+                                            <constraint firstItem="MYr-S8-Wrd" firstAttribute="height" secondItem="q5S-4f-MVT" secondAttribute="height" multiplier="103:151" id="wrU-LK-LHg"/>
+                                        </constraints>
+                                        <connections>
+                                            <outlet property="contentsLbl" destination="MYr-S8-Wrd" id="RNV-fE-95b"/>
+                                            <outlet property="nameLbl" destination="3zW-s2-gNQ" id="pIo-dS-G9w"/>
+                                        </connections>
+                                    </collectionViewCell>
+                                </cells>
+                                <connections>
+                                    <outlet property="dataSource" destination="Zmd-xj-NeQ" id="6aP-L4-a3O"/>
+                                    <outlet property="delegate" destination="Zmd-xj-NeQ" id="lC0-ZV-h6r"/>
+                                </connections>
+                            </collectionView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="haA-so-Cg3" firstAttribute="leading" secondItem="xtc-uZ-NU5" secondAttribute="leading" constant="16" id="2CZ-z3-dES"/>
                             <constraint firstItem="xtc-uZ-NU5" firstAttribute="trailing" secondItem="orY-QN-IHj" secondAttribute="trailing" constant="33" id="4fi-zD-ztH"/>
                             <constraint firstItem="orY-QN-IHj" firstAttribute="width" secondItem="LC2-By-w9d" secondAttribute="height" multiplier="10:71" id="6eV-cb-4nO"/>
                             <constraint firstItem="8cc-gv-SQU" firstAttribute="leading" secondItem="xtc-uZ-NU5" secondAttribute="leading" constant="16" id="9WB-F7-3Z0"/>
                             <constraint firstItem="8cc-gv-SQU" firstAttribute="bottom" secondItem="xtc-uZ-NU5" secondAttribute="bottom" id="JWs-Xm-UFh"/>
                             <constraint firstItem="8cc-gv-SQU" firstAttribute="bottom" secondItem="xtc-uZ-NU5" secondAttribute="bottom" id="LKz-Ce-waQ"/>
+                            <constraint firstItem="haA-so-Cg3" firstAttribute="bottom" secondItem="xtc-uZ-NU5" secondAttribute="bottom" id="bb7-4d-Wuv"/>
                             <constraint firstItem="xtc-uZ-NU5" firstAttribute="trailing" secondItem="8cc-gv-SQU" secondAttribute="trailing" constant="16" id="eB2-Jt-OQX"/>
+                            <constraint firstItem="haA-so-Cg3" firstAttribute="top" secondItem="xtc-uZ-NU5" secondAttribute="top" id="emd-HI-C8E"/>
+                            <constraint firstItem="xtc-uZ-NU5" firstAttribute="trailing" secondItem="haA-so-Cg3" secondAttribute="trailing" constant="16" id="nOU-KR-7hA"/>
                             <constraint firstItem="xtc-uZ-NU5" firstAttribute="bottom" secondItem="orY-QN-IHj" secondAttribute="bottom" constant="25" id="tft-YM-iQu"/>
                             <constraint firstItem="8cc-gv-SQU" firstAttribute="top" secondItem="xtc-uZ-NU5" secondAttribute="top" id="v29-h6-p6o"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="xtc-uZ-NU5"/>
                     </view>
                     <navigationItem key="navigationItem" title="All Notes" id="hcg-d8-gVT">
-                        <barButtonItem key="rightBarButtonItem" title="Light" id="hJj-VB-wIQ">
-                            <connections>
-                                <action selector="themeChangeButtonAction:" destination="Zmd-xj-NeQ" id="flW-f6-Sco"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem title="Light" id="hJj-VB-wIQ">
+                                <connections>
+                                    <action selector="themeChangeButtonAction:" destination="Zmd-xj-NeQ" id="flW-f6-Sco"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem systemItem="organize" id="dpT-4e-l14">
+                                <connections>
+                                    <action selector="ChangeFilesViewAction:" destination="Zmd-xj-NeQ" id="Pa1-2D-pAn"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
                     <connections>
                         <outlet property="AddNewButton" destination="orY-QN-IHj" id="82Z-wx-g31"/>
+                        <outlet property="filesCollection" destination="haA-so-Cg3" id="1Ii-Au-yBt"/>
                         <outlet property="filesTable" destination="8cc-gv-SQU" id="F06-1I-GFK"/>
                         <outlet property="themeChangeButton" destination="hJj-VB-wIQ" id="acN-Gm-sSm"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fsG-VG-jru" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1949.5999999999999" y="133.5832083958021"/>
+            <point key="canvasLocation" x="1949.2753623188407" y="133.25892857142856"/>
         </scene>
         <!--Add New File View Controller-->
         <scene sceneID="6zJ-fV-b90">
