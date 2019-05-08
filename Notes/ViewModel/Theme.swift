@@ -46,6 +46,15 @@ public enum theme: String {
             return UIColor.blue.cgColor
         }
     }
+    
+    var seperatorColor: CGColor {
+        switch self {
+        case .light:
+            return UIColor.blue.cgColor
+        case .dark:
+            return UIColor.white.cgColor
+        }
+    }
 }
 
 public var currentTheme: theme = .light
@@ -79,4 +88,24 @@ public extension UITableView {
         self.backgroundColor = currentTheme.subViewColor
     }
 }
+
+public extension UICollectionViewCell {
+    func applyTheme() {
+        self.backgroundColor = currentTheme.subViewColor
+    }
+}
+
+public extension UICollectionView {
+    func applyTheme() {
+        self.backgroundColor = currentTheme.subViewColor
+    }
+}
+
+public extension UILabel {
+    func applyTheme() {
+        self.backgroundColor = currentTheme.subViewColor
+        self.textColor = currentTheme.textColor
+    }
+}
+
 

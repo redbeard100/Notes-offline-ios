@@ -9,7 +9,7 @@
 import UIKit
 
 class allFilesCollectionViewCell: UICollectionViewCell {
-    @IBOutlet weak var nameLbl: UILabel!
-    
+    @IBOutlet weak var nameLbl: UILabel!    
     @IBOutlet weak var contentsLbl: UILabel!
+    @IBOutlet weak var deleteButton: UIButton!
 }
