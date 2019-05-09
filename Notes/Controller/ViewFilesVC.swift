@@ -9,47 +9,39 @@
 import UIKit
 
 class ViewFilesVC: UIViewController {
-    @IBOutlet weak var AddNewButton: UIButton!
-    @IBOutlet weak var filesTable: UITableView!
-    @IBOutlet weak var themeChangeButton: UIBarButtonItem!
-    @IBOutlet weak var filesCollection: UICollectionView!
-    let addNewFileViewController = AddNewFileViewController()
-    var isDeleteButtonVisible = false
-    var isshaking = false
-    var cancelButton = UIBarButtonItem()
-    
+    @IBOutlet weak private var AddNewButton: UIButton!
+    @IBOutlet weak  private var filesTable: UITableView!
+    @IBOutlet weak private var themeChangeButton: UIBarButtonItem!
+    @IBOutlet weak private var filesCollection: UICollectionView!
+    private let addNewFileViewController = AddNewFileViewController()
+    private var isDeleteButtonVisible = false
+    private var isshaking = false
+    private var cancelButton = UIBarButtonItem()
+    private var didAnimate = false
+    private var didCellAnimate = true
     override func viewDidLoad() {
         super.viewDidLoad()
-        DataOperations.shared.fetchData()
-        AddNewButton.layer.masksToBounds = true
-        AddNewButton.layer.cornerRadius = AddNewButton.frame.width/2
-        if UserDefaults.standard.object(forKey: "Theme") as? String == "Dark" {
-            currentTheme = .dark
-        }else {
-            UserDefaults.standard.set("Light", forKey: "Theme")
-            currentTheme = .light
-        }
-        if UserDefaults.standard.object(forKey: "CurrentView") as? String == "CollectionView" {
-            filesTable.isHidden = true
-            filesCollection.isHidden = false
-            customizeCollectionViewLayout()
-        }else {
-            filesTable.isHidden = false
-            filesCollection.isHidden = true
-        }
-        themeChangeButton.title = UserDefaults.standard.object(forKey: "Theme") as? String
+        settingUpSavedTheme()
         filesTable.applyTheme()
         filesCollection.applyTheme()
+        customizeAddNewButton()
+        filesTable.tableFooterView = UIView() // For Elemination extra seperators
         view.backgroundColor = currentTheme.superViewColor
         NotificationCenter.default.addObserver(self, selector: #selector(deviceOrientationDidChange), name: UIApplication.didChangeStatusBarOrientationNotification, object: nil)
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+        if !didAnimate {
+            performAnimation()
+            didAnimate = true
+        }
         DataOperations.shared.fetchData()
         filesTable.reloadData()
         filesCollection.reloadData()
     }
     
+//    MARK:- Theme Changed Button Action
     @IBAction func themeChangeButtonAction(_ sender: UIBarButtonItem) {
         if UserDefaults.standard.object(forKey: "Theme") as? String == "Light" {
             UserDefaults.standard.set("Dark", forKey: "Theme")
@@ -67,17 +59,50 @@ class ViewFilesVC: UIViewController {
         filesCollection.reloadData()
     }
     
+    //    MARK:- Files View Changed Button Action
     @IBAction func ChangeFilesViewAction(_ sender: UIBarButtonItem) {
         if filesTable.isHidden == false {
             filesTable.isHidden = true
             filesCollection.isHidden = false
+            filesCollection.reloadData()
             customizeCollectionViewLayout()
             UserDefaults.standard.set("CollectionView", forKey: "CurrentView")
         }else {
             filesTable.isHidden = false
             filesCollection.isHidden = true
+            filesTable.reloadData()
             UserDefaults.standard.set("TableView", forKey: "CurrentView")
         }
+    }
+    
+//    MARK:- Settingup theme from UserDefaults
+    func settingUpSavedTheme() {
+        if UserDefaults.standard.object(forKey: "Theme") as? String == "Dark" {
+            currentTheme = .dark
+        }else {
+            UserDefaults.standard.set("Light", forKey: "Theme")
+            currentTheme = .light
+        }
+        if UserDefaults.standard.object(forKey: "CurrentView") as? String == "CollectionView" {
+            filesTable.isHidden = true
+            filesCollection.isHidden = false
+            customizeCollectionViewLayout()
+        }else {
+            filesTable.isHidden = false
+            filesCollection.isHidden = true
+        }
+        themeChangeButton.title = UserDefaults.standard.object(forKey: "Theme") as? String
+    }
+    
+//    MARK:- Customizing AddNewButton
+    func customizeAddNewButton() {
+        AddNewButton.layer.masksToBounds = true
+        AddNewButton.layer.cornerRadius = AddNewButton.frame.width/2
+    }
+    
+//    MARK:- Perform AddFileButton Animation
+    func performAnimation() {
+        AddNewButton.zoom()
     }
 }
 
@@ -109,9 +134,19 @@ extension ViewFilesVC: UITableViewDelegate, UITableViewDataSource {
             tableView.reloadData()
         }
     }
+    
+    //    MARK:- Animate Table rows
+    func tableView(_ tableView: UITableView, willDisplay cell:
+        UITableViewCell, forRowAt indexPath: IndexPath) {
+        cell.layer.transform = CATransform3DMakeScale(0.1,0.1,1)
+        UIView.animate(withDuration: 0.5, delay: Double(indexPath.row) * 0.2, options: .curveEaseInOut, animations: {
+            cell.layer.transform = CATransform3DMakeScale(1,1,1)
+        }, completion: nil)
+    }
 }
 
 extension ViewFilesVC: UICollectionViewDelegate, UICollectionViewDataSource {
+    
     //    MARK:- Collection View Delegates
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return DataModel.shared.name.count
@@ -144,6 +179,16 @@ extension ViewFilesVC: UICollectionViewDelegate, UICollectionViewDataSource {
         navigationController?.pushViewController(AddFileVC, animated: true)
     }
     
+    //    MARK:- Animate Collection View Cells
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if didCellAnimate {
+            cell.layer.transform = CATransform3DMakeScale(0.1,0.1,1)
+            UIView.animate(withDuration: 0.5, delay: Double(indexPath.row) * 0.2, options: .curveEaseInOut, animations: {
+                cell.layer.transform = CATransform3DMakeScale(1,1,1)
+            }, completion: nil)
+        }
+    }
+    
 //    MARK:- Only two cells in a row
     func customizeCollectionViewLayout() {
         let itemsize = (UIScreen.main.bounds.width - 32)/2 - 2
@@ -165,18 +210,21 @@ extension ViewFilesVC: UICollectionViewDelegate, UICollectionViewDataSource {
         switch recognizer.state {
         case .began:
             isDeleteButtonVisible = true
+            didCellAnimate = false
+            themeChangeButton.isEnabled = false
             isshaking = true
             filesCollection.reloadData()
                 cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButtonAction(_:)))
                 self.navigationItem.leftBarButtonItem  = cancelButton
-        default:
-            print("Any other action?")
+        default: break
         }
     }
     
     //    MARK:- Navigation bar Button Cancel Button Action to stop deletion
      @objc func cancelButtonAction(_ sender: UIBarButtonItem) {
         self.navigationItem.leftBarButtonItems?.remove(at: 0)
+        didCellAnimate = true
+        themeChangeButton.isEnabled = true
         isDeleteButtonVisible = false
         isshaking = false
         filesCollection.reloadData()
@@ -193,10 +241,12 @@ extension ViewFilesVC: UICollectionViewDelegate, UICollectionViewDataSource {
         present(deleteAlert, animated: true, completion: nil)
     }
     
+    //    MARK:- Customize Delete Button 
     func deleteButtonCustomization(deleteButton: UIButton, index: Int) {
         let image = UIImage(named: "crossButton.png")
         deleteButton.setImage(image, for: .normal)
         deleteButton.layer.masksToBounds = true
+        deleteButton.backgroundColor = .gray
         deleteButton.layer.cornerRadius = deleteButton.frame.width/2
         deleteButton.tag = index
         deleteButton.addTarget(self, action: #selector(deleteButtonAction(_:)), for: .touchUpInside)
@@ -217,5 +267,15 @@ extension UIView {
         animation.values = [-5.0, 5.0, -5.0, 5.0, -3.0, 3.0, -1.5, 1.5, 0.0 ]
         animation.repeatCount = .infinity
         layer.add(animation, forKey: "shake")
+    }
+    
+    func zoom() {
+        UIView.animate(withDuration: 0.6, animations: {
+            self.transform = CGAffineTransform.identity.scaledBy(x: 0.6, y: 0.6)
+        }, completion: { (finish) in
+            UIView.animate(withDuration: 0.6, delay: 2, animations: {
+                self.transform = CGAffineTransform.identity
+            })
+        })
     }
 }
