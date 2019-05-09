@@ -75,7 +75,7 @@ class ViewFilesVC: UIViewController {
         }
     }
     
-//    MARK:- Settingup theme from UserDefaults
+    //    MARK:- Settingup theme from UserDefaults
     func settingUpSavedTheme() {
         if UserDefaults.standard.object(forKey: "Theme") as? String == "Dark" {
             currentTheme = .dark
@@ -94,13 +94,13 @@ class ViewFilesVC: UIViewController {
         themeChangeButton.title = UserDefaults.standard.object(forKey: "Theme") as? String
     }
     
-//    MARK:- Customizing AddNewButton
+    //    MARK:- Customizing AddNewButton
     func customizeAddNewButton() {
         AddNewButton.layer.masksToBounds = true
         AddNewButton.layer.cornerRadius = AddNewButton.frame.width/2
     }
     
-//    MARK:- Perform AddFileButton Animation
+    //    MARK:- Perform AddFileButton Animation
     func performAnimation() {
         AddNewButton.zoom()
     }
@@ -274,9 +274,10 @@ extension UIView {
         UIView.animate(withDuration: 0.6, animations: {
             self.transform = CGAffineTransform.identity.scaledBy(x: 0.6, y: 0.6)
         }, completion: { (finish) in
-            UIView.animate(withDuration: 0.6, delay: 2, animations: {
+            UIView.animate(withDuration: 0.6, delay: 0.4, animations: {
                 self.transform = CGAffineTransform.identity
             })
         })
     }
 }
+

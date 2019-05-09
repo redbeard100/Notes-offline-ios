@@ -9,8 +9,12 @@
 import UIKit
 
 class AddNewFileViewController: UIViewController {
-    @IBOutlet weak var nameTextField: UITextField!
-    @IBOutlet weak var contentTextView: UITextView!
+    @IBOutlet weak private var nameTextField: UITextField!
+    @IBOutlet weak private var contentTextView: UITextView!
+    
+    @IBOutlet weak var containerViewTopConst: NSLayoutConstraint!
+    @IBOutlet weak var optionsView: UIView!
+    @IBOutlet weak private var contentTextViewBottomConst: NSLayoutConstraint!
     var saveButton: UIBarButtonItem!
     var textViewInteraction = 0
     var flagUpdate = 0
@@ -18,17 +22,18 @@ class AddNewFileViewController: UIViewController {
     var isKeyboardVisible = 0
     var isSaved = 0
     var keyboardHeight: CGFloat = 0
-    
-    @IBOutlet weak var contentTextViewBottomConst: NSLayoutConstraint!
+    var optionsViewShow = true
     override func viewDidLoad() {
         super.viewDidLoad()
         self.automaticallyAdjustsScrollViewInsets = false
         view.backgroundColor = currentTheme.superViewColor
+        optionsView.backgroundColor = .yellow
         customizeTextView()
         customizeTextField()
-        customizeSaveButton()
+        customizeNavBarButton()
         keyboardHandelar()
         settingTexts()
+        optionButtonAction()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -171,12 +176,26 @@ class AddNewFileViewController: UIViewController {
         }
     }
     
-    func customizeSaveButton() {
+    func customizeNavBarButton() {
         saveButton = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(saveButtonAction(_:)))
-        self.navigationItem.rightBarButtonItem  = saveButton
+        let optionButton = UIBarButtonItem(title: "Options", style: .plain, target: self, action: #selector(optionButtonAction))
+        self.navigationItem.rightBarButtonItems = [saveButton, optionButton]
         saveButton.isEnabled = false
     }
     
+    @objc func optionButtonAction() {
+        if !optionsViewShow {
+            optionsView.isHidden = false
+            optionsViewShow = true
+        containerViewTopConst.constant = optionsView.frame.height
+            view.layoutIfNeeded()
+        }else {
+            optionsViewShow = false
+            optionsView.isHidden = true
+            containerViewTopConst.constant = 0
+            view.layoutIfNeeded()
+        }
+    }
     func keyboardHandelar() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
