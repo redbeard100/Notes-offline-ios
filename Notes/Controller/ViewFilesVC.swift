@@ -139,7 +139,7 @@ extension ViewFilesVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, willDisplay cell:
         UITableViewCell, forRowAt indexPath: IndexPath) {
         cell.layer.transform = CATransform3DMakeScale(0.1,0.1,1)
-        UIView.animate(withDuration: 0.5, delay: Double(indexPath.row) * 0.2, options: .curveEaseInOut, animations: {
+        UIView.animate(withDuration: 0.5, delay: Double(indexPath.row) * 0.05, options: .curveEaseInOut, animations: {
             cell.layer.transform = CATransform3DMakeScale(1,1,1)
         }, completion: nil)
     }
@@ -183,7 +183,7 @@ extension ViewFilesVC: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if didCellAnimate {
             cell.layer.transform = CATransform3DMakeScale(0.1,0.1,1)
-            UIView.animate(withDuration: 0.5, delay: Double(indexPath.row) * 0.2, options: .curveEaseInOut, animations: {
+            UIView.animate(withDuration: 0.5, delay: Double(indexPath.row) * 0.01, options: .curveEaseInOut, animations: {
                 cell.layer.transform = CATransform3DMakeScale(1,1,1)
             }, completion: nil)
         }
