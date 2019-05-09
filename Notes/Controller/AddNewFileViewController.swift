@@ -34,6 +34,8 @@ class AddNewFileViewController: UIViewController {
         keyboardHandelar()
         settingTexts()
         optionButtonAction()
+        nameTextField.zoom(x: 0.9 , y: 0.9)
+        contentTextView.zoom(x: 0.9, y: 0.9)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -78,7 +80,7 @@ class AddNewFileViewController: UIViewController {
             }
         }
         else if (flagUpdate == 1) {
-            if !checkforEmptyString(string:nameTextField.text!) && !checkforEmptyString(string:contentTextView.text!) {
+            if !checkforEmptyString(string:nameTextField.text!) && !checkforEmptyString(string:contentTextView.text!) && (contentTextView.text != "Enter the content here") {
                 if (name.first == " ") {
                     name.removeFirst()
                 }

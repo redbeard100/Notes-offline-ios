@@ -41,7 +41,7 @@ class ViewFilesVC: UIViewController {
         filesCollection.reloadData()
     }
     
-//    MARK:- Theme Changed Button Action
+    //    MARK:- Theme Changed Button Action
     @IBAction func themeChangeButtonAction(_ sender: UIBarButtonItem) {
         if UserDefaults.standard.object(forKey: "Theme") as? String == "Light" {
             UserDefaults.standard.set("Dark", forKey: "Theme")
@@ -102,7 +102,7 @@ class ViewFilesVC: UIViewController {
     
     //    MARK:- Perform AddFileButton Animation
     func performAnimation() {
-        AddNewButton.zoom()
+        AddNewButton.zoom(x: 0.6, y: 0.6)
     }
 }
 
@@ -156,8 +156,6 @@ extension ViewFilesVC: UICollectionViewDelegate, UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "customCell", for: indexPath) as! allFilesCollectionViewCell
         cell.nameLbl.text = DataModel.shared.name[indexPath.row]
         cell.contentsLbl.text = DataModel.shared.content[indexPath.row]
-        cell.contentsLbl.lineBreakMode = .byWordWrapping
-        cell.contentsLbl.numberOfLines = 0
         cell.nameLbl.applyTheme()
         cell.contentsLbl.applyTheme()
         cell.layer.borderWidth = 2
@@ -189,7 +187,7 @@ extension ViewFilesVC: UICollectionViewDelegate, UICollectionViewDataSource {
         }
     }
     
-//    MARK:- Only two cells in a row
+    //    MARK:- Only two cells in a row
     func customizeCollectionViewLayout() {
         let itemsize = (UIScreen.main.bounds.width - 32)/2 - 2
         let layout = UICollectionViewFlowLayout()
@@ -202,10 +200,10 @@ extension ViewFilesVC: UICollectionViewDelegate, UICollectionViewDataSource {
     
     //    MARK:- Reload Layout to adjust device rotation
     @objc func deviceOrientationDidChange(_ notification: Notification) {
-               customizeCollectionViewLayout()
+        customizeCollectionViewLayout()
     }
     
-//    MARK:- LongPress Gesture Action
+    //    MARK:- LongPress Gesture Action
     @objc func didLongPressCell (recognizer: UILongPressGestureRecognizer) {
         switch recognizer.state {
         case .began:
@@ -214,14 +212,14 @@ extension ViewFilesVC: UICollectionViewDelegate, UICollectionViewDataSource {
             themeChangeButton.isEnabled = false
             isshaking = true
             filesCollection.reloadData()
-                cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButtonAction(_:)))
-                self.navigationItem.leftBarButtonItem  = cancelButton
+            cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButtonAction(_:)))
+            self.navigationItem.leftBarButtonItem  = cancelButton
         default: break
         }
     }
     
     //    MARK:- Navigation bar Button Cancel Button Action to stop deletion
-     @objc func cancelButtonAction(_ sender: UIBarButtonItem) {
+    @objc func cancelButtonAction(_ sender: UIBarButtonItem) {
         self.navigationItem.leftBarButtonItems?.remove(at: 0)
         didCellAnimate = true
         themeChangeButton.isEnabled = true
@@ -258,7 +256,7 @@ extension ViewFilesVC: UICollectionViewDelegate, UICollectionViewDataSource {
     }
 }
 
-extension UIView {
+public extension UIView {
     //    MARK:- To shake the Views
     func shake() {
         let animation = CAKeyframeAnimation(keyPath: "transform.translation.x")
@@ -270,9 +268,9 @@ extension UIView {
     }
     
     //    MARK:- Add zoom effects the Views
-    func zoom() {
+    func zoom(x: CGFloat, y: CGFloat) {
         UIView.animate(withDuration: 0.6, animations: {
-            self.transform = CGAffineTransform.identity.scaledBy(x: 0.6, y: 0.6)
+            self.transform = CGAffineTransform.identity.scaledBy(x: x, y: y)
         }, completion: { (finish) in
             UIView.animate(withDuration: 0.6, delay: 0.4, animations: {
                 self.transform = CGAffineTransform.identity
