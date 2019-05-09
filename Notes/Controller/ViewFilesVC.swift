@@ -259,7 +259,7 @@ extension ViewFilesVC: UICollectionViewDelegate, UICollectionViewDataSource {
 }
 
 extension UIView {
-//    MARK:- To shake the Views
+    //    MARK:- To shake the Views
     func shake() {
         let animation = CAKeyframeAnimation(keyPath: "transform.translation.x")
         animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.linear)
@@ -269,6 +269,7 @@ extension UIView {
         layer.add(animation, forKey: "shake")
     }
     
+    //    MARK:- Add zoom effects the Views
     func zoom() {
         UIView.animate(withDuration: 0.6, animations: {
             self.transform = CGAffineTransform.identity.scaledBy(x: 0.6, y: 0.6)
