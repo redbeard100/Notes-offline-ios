@@ -246,7 +246,7 @@ extension ViewFilesVC: UICollectionViewDelegate, UICollectionViewDataSource {
         let image = UIImage(named: "crossButton.png")
         deleteButton.setImage(image, for: .normal)
         deleteButton.layer.masksToBounds = true
-        deleteButton.backgroundColor = .gray
+        deleteButton.backgroundColor = .yellow
         deleteButton.layer.cornerRadius = deleteButton.frame.width/2
         deleteButton.tag = index
         deleteButton.addTarget(self, action: #selector(deleteButtonAction(_:)), for: .touchUpInside)
